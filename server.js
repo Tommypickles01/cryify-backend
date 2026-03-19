@@ -102,8 +102,8 @@ app.post('/generate', upload.single('image'), async (req, res) => {
 
   try {
     const resized = await sharp(req.file.buffer)
-      .resize(1024, 1024, { fit: 'inside', withoutEnlargement: true })
-      .png()
+      .resize(512, 512, { fit: 'inside', withoutEnlargement: true })
+      .png({ compressionLevel: 6 })
       .toBuffer();
 
     console.log(`[${jobId}] Sending to Gemini image editing...`);
