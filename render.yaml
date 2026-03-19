@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: cryify-api
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PORT
+        value: 10000
+    disk:
+      name: outputs
+      mountPath: /app/outputs
+      sizeGB: 1
