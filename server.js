@@ -56,7 +56,7 @@ async function geminiEdit(imageBuffer) {
     {
       contents: [{
         parts: [
-          { inlineData: { mimeType: 'image/png', data: imageB64 } },
+          { inlineData: { mimeType: 'image/jpeg', data: imageB64 } },
           { text: prompt },
         ],
       }],
@@ -103,7 +103,7 @@ app.post('/generate', upload.single('image'), async (req, res) => {
   try {
     const resized = await sharp(req.file.buffer)
       .resize(512, 512, { fit: 'inside', withoutEnlargement: true })
-      .png({ compressionLevel: 6 })
+      .jpeg({ quality: 85 })
       .toBuffer();
 
     console.log(`[${jobId}] Sending to Gemini image editing...`);
