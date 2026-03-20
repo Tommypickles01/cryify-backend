@@ -67,9 +67,13 @@ async function geminiEdit(imageBuffer) {
     { timeout: 90000 }
   );
 
-  const parts   = res.data.candidates?.[0]?.content?.parts || [];
+  const candidate = res.data.candidates?.[0];
+  if (candidate?.finishReason === 'PROHIBITED_CONTENT' || candidate?.finishReason === 'SAFETY') {
+    throw new Error('This image couldn\'t be processed — try a different one.');
+  }
+  const parts   = candidate?.content?.parts || [];
   const imgPart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
-  if (!imgPart) throw new Error('Gemini returned no image. Response: ' + JSON.stringify(res.data).slice(0, 300));
+  if (!imgPart) throw new Error('Generation failed — try a different image.');
 
   return Buffer.from(imgPart.inlineData.data, 'base64');
 }
