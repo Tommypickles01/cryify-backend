@@ -43,13 +43,16 @@ async function geminiEdit(imageBuffer) {
 
   const prompt =
     'Edit this image: keep everything identical except restyle the face to show an intensely crying expression. ' +
-    'CRITICAL: match the exact art style and rendering technique already present in the image. ' +
-    'Apply these changes to the face, rendered in the same style as the original image: ' +
-    'recolor the skin to bright yellow, replace the eyes with scrunched-shut crying eyes, ' +
+    'CRITICAL: preserve the exact art style and rendering technique of the original image. ' +
+    'Apply these changes to the face: ' +
+    'tint the skin bright yellow, replace the eyes with scrunched-shut crying eyes, ' +
     'draw eyebrows furrowed hard downward, replace the mouth with a wide-open wailing shape showing teeth, ' +
     'and add two bright blue teardrop streams flowing down from the eyes. ' +
-    'If the image is a real photograph, render all of these features photorealistically with realistic lighting, shading, and skin texture — just yellow. ' +
-    'If the image is a cartoon, anime, or illustration, render them in that exact matching style. ' +
+    'If the image is a real photograph: the yellow skin MUST look like real human skin painted yellow — ' +
+    'preserve all the original pores, skin texture, subsurface scattering, shadows, and highlights, ' +
+    'just shift the hue to yellow. Do NOT make it look flat, plastic, or cartoon. ' +
+    'The tears and eyes must also look physically real and photographic. ' +
+    'If the image is a cartoon, anime, or illustration, render the changes in that exact matching style. ' +
     'Do NOT add stickers or overlays — repaint the face itself. ' +
     'The face must stay at the same position, size, angle, and lighting as the original. ' +
     'Hair, body, clothing, and background remain completely unchanged.';
