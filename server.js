@@ -42,20 +42,16 @@ async function geminiEdit(imageBuffer) {
   const imageB64 = imageBuffer.toString('base64');
 
   const prompt =
-    'Edit this image: keep everything identical except restyle the face to show an intensely crying expression. ' +
-    'CRITICAL: preserve the exact art style and rendering technique of the original image. ' +
-    'Apply these changes to the face: ' +
-    'tint the skin bright yellow, replace the eyes with scrunched-shut crying eyes, ' +
-    'draw eyebrows furrowed hard downward, replace the mouth with a wide-open wailing shape showing teeth, ' +
-    'and add two bright blue teardrop streams flowing down from the eyes. ' +
-    'If the image is a real photograph: the yellow skin MUST look like real human skin painted yellow — ' +
-    'preserve all the original pores, skin texture, subsurface scattering, shadows, and highlights, ' +
-    'just shift the hue to yellow. Do NOT make it look flat, plastic, or cartoon. ' +
-    'The tears and eyes must also look physically real and photographic. ' +
-    'If the image is a cartoon, anime, or illustration, render the changes in that exact matching style. ' +
-    'Do NOT add stickers or overlays — repaint the face itself. ' +
-    'The face must stay at the same position, size, angle, and lighting as the original. ' +
-    'Hair, body, clothing, and background remain completely unchanged.';
+    'CRITICAL RULE: every edit must match the exact art style, rendering quality, and visual technique of the original image — do not change the style under any circumstances. ' +
+    'Edit only the face to look like the 😭 loudly crying face emoji expression, seamlessly integrated into the image. ' +
+    'Make these four changes to the face and nothing else: ' +
+    '1) SKIN: recolor the face to bright yellow. Preserve every detail of the original skin — all pores, texture, wrinkles, skin grain, subsurface scattering, shadows, and highlights must remain intact. The yellow must look like the skin was painted or tinted yellow, not replaced. ' +
+    '2) EYES: replace with tightly scrunched-shut downward curved lines, eyebrows pulled hard inward and downward in an anguished frown. ' +
+    '3) MOUTH: wide open wailing shape, showing upper teeth, bottom lip pushed outward. ' +
+    '4) TEARS: two thick bright blue teardrop streams flowing down both cheeks from the eyes. ' +
+    'Do NOT add any sticker, overlay, or graphic — repaint the face itself only. ' +
+    'Keep the face at the exact same position, angle, scale, and lighting as the original. ' +
+    'Hair, body, clothing, and background must remain completely unchanged.';
 
   const res = await axios.post(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI}`,
