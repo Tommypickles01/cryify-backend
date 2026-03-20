@@ -42,14 +42,17 @@ async function geminiEdit(imageBuffer) {
   const imageB64 = imageBuffer.toString('base64');
 
   const prompt =
-    'Photo edit: keep the entire image identical except restyle the face/head only. ' +
-    'Do NOT add any sticker, overlay, or graphic on top of the image. ' +
-    'Instead, repaint the face itself with these cartoon illustration features seamlessly integrated: ' +
-    'skin recolored to bright flat yellow, both eyes replaced with scrunched-shut downward curved lines, ' +
-    'eyebrows drawn thick and furrowed hard downward, mouth replaced with a wide-open wailing shape showing teeth, ' +
-    'two thick bright blue teardrop streams painted flowing down from the eyes. ' +
-    'The restyled face must match the original face position, size, angle, and lighting exactly. ' +
-    'Hair, body, clothing, and background remain completely unchanged and photorealistic.';
+    'Edit this image: keep everything identical except restyle the face to show an intensely crying expression. ' +
+    'CRITICAL: match the exact art style and rendering technique already present in the image. ' +
+    'Apply these changes to the face, rendered in the same style as the original image: ' +
+    'recolor the skin to bright yellow, replace the eyes with scrunched-shut crying eyes, ' +
+    'draw eyebrows furrowed hard downward, replace the mouth with a wide-open wailing shape showing teeth, ' +
+    'and add two bright blue teardrop streams flowing down from the eyes. ' +
+    'If the image is a real photograph, render all of these features photorealistically with realistic lighting, shading, and skin texture — just yellow. ' +
+    'If the image is a cartoon, anime, or illustration, render them in that exact matching style. ' +
+    'Do NOT add stickers or overlays — repaint the face itself. ' +
+    'The face must stay at the same position, size, angle, and lighting as the original. ' +
+    'Hair, body, clothing, and background remain completely unchanged.';
 
   const res = await axios.post(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI}`,
