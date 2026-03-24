@@ -1,3 +1,4 @@
+// v2 — ffmpeg + full spawn error handling
 require('dotenv').config();
 const express  = require('express');
 const multer   = require('multer');
