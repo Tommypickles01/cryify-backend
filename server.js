@@ -89,9 +89,15 @@ async function geminiEdit(imageBuffer) {
 
 // ─── Health ───────────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
+  const { execSync } = require('child_process');
+  let ffmpeg = 'unknown';
+  try { execSync('ffmpeg -version', { timeout: 3000 }); ffmpeg = 'ok'; } catch { ffmpeg = 'MISSING'; }
   res.json({
     status: 'ok',
     gemini_key: GEMINI && GEMINI !== 'your_gemini_api_key_here' ? 'configured' : 'MISSING',
+    minimax_key: MINIMAX ? 'configured' : 'MISSING',
+    fal_key: FAL_KEY ? 'configured' : 'MISSING',
+    ffmpeg,
   });
 });
 
@@ -172,6 +178,7 @@ function runFFmpeg(inputPath, outputPath, type) {
     const proc = spawn('ffmpeg', args);
     let errLog = '';
     proc.stderr.on('data', d => { errLog += d.toString(); });
+    proc.on('error', err => reject(new Error(`ffmpeg spawn error: ${err.message}`)));
     proc.on('close', code => code === 0 ? resolve() : reject(new Error(errLog.slice(-400))));
   });
 }
@@ -313,6 +320,7 @@ async function runVideoGeneration(jobId, imageBuffer) {
         '-i', rawPath, '-map_metadata', '-1',
         '-c:v', 'copy', '-y', outPath,
       ]);
+      proc.on('error', err => reject(new Error(`ffmpeg spawn error: ${err.message}`)));
       proc.on('close', code => {
         fs.unlinkSync(rawPath);
         code === 0 ? resolve() : reject(new Error('FFmpeg fallback failed'));
@@ -336,6 +344,7 @@ async function runVideoGeneration(jobId, imageBuffer) {
     ]);
     let errLog = '';
     proc.stderr.on('data', d => { errLog += d.toString(); });
+    proc.on('error', err => reject(new Error(`ffmpeg spawn error: ${err.message}`)));
     proc.on('close', code => {
       fs.unlinkSync(withAudioPath);
       code === 0 ? resolve() : reject(new Error(errLog.slice(-400)));
@@ -370,6 +379,7 @@ async function runGifGeneration(sourceJobId, isMobile) {
     const proc = spawn('ffmpeg', args);
     let errLog = '';
     proc.stderr.on('data', d => { errLog += d.toString(); });
+    proc.on('error', err => reject(new Error(`ffmpeg spawn error: ${err.message}`)));
     proc.on('close', code => code === 0 ? resolve() : reject(new Error(errLog.slice(-600))));
   });
 
