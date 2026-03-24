@@ -47,6 +47,7 @@ fs.readdirSync(OUTPUTS_DIR)
   });
 if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY);
 
+app.set('trust proxy', 1); // trust Railway's HTTPS proxy so req.protocol === 'https'
 app.use(cors());
 app.use(express.json());
 
