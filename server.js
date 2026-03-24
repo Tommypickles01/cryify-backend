@@ -91,7 +91,8 @@ async function geminiEdit(imageBuffer) {
 
 // ─── Health ───────────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
-  const ffmpeg = (ffmpegBin && fs.existsSync(ffmpegBin)) ? 'ok' : 'MISSING';
+  let ffmpeg = 'MISSING';
+  try { require('child_process').execSync('which ffmpeg', { timeout: 3000 }); ffmpeg = 'ok'; } catch { ffmpeg = 'MISSING'; }
   res.json({
     status: 'ok',
     build: 'v4-ffmpeg-static',
