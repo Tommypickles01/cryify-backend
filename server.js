@@ -1,4 +1,4 @@
-// v2 — ffmpeg + full spawn error handling
+// v3 — ffmpeg-static bundled binary
 require('dotenv').config();
 const express  = require('express');
 const multer   = require('multer');
@@ -11,6 +11,7 @@ const { v4: uuidv4 } = require('uuid');
 const { spawn } = require('child_process');
 const { GoogleGenAI } = require('@google/genai');
 const { fal } = require('@fal-ai/client');
+const ffmpegBin = require('ffmpeg-static');
 
 const app    = express();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
@@ -90,9 +91,7 @@ async function geminiEdit(imageBuffer) {
 
 // ─── Health ───────────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
-  const { execSync } = require('child_process');
-  let ffmpeg = 'unknown';
-  try { execSync('ffmpeg -version', { timeout: 3000 }); ffmpeg = 'ok'; } catch { ffmpeg = 'MISSING'; }
+  const ffmpeg = (ffmpegBin && fs.existsSync(ffmpegBin)) ? 'ok' : 'MISSING';
   res.json({
     status: 'ok',
     gemini_key: GEMINI && GEMINI !== 'your_gemini_api_key_here' ? 'configured' : 'MISSING',
@@ -176,7 +175,7 @@ function runFFmpeg(inputPath, outputPath, type) {
       ];
     }
 
-    const proc = spawn('ffmpeg', args);
+    const proc = spawn(ffmpegBin,args);
     let errLog = '';
     proc.stderr.on('data', d => { errLog += d.toString(); });
     proc.on('error', err => reject(new Error(`ffmpeg spawn error: ${err.message}`)));
@@ -317,7 +316,7 @@ async function runVideoGeneration(jobId, imageBuffer) {
     console.warn(`[video:${jobId}] MMAudio failed — falling back to silent video`);
     // Strip metadata from raw and use as final output
     await new Promise((resolve, reject) => {
-      const proc = spawn('ffmpeg', [
+      const proc = spawn(ffmpegBin,[
         '-i', rawPath, '-map_metadata', '-1',
         '-c:v', 'copy', '-y', outPath,
       ]);
@@ -339,7 +338,7 @@ async function runVideoGeneration(jobId, imageBuffer) {
   const withAudioPath = path.join(OUTPUTS_DIR, `${jobId}-audio.mp4`);
   fs.writeFileSync(withAudioPath, Buffer.from(finalRes.data));
   await new Promise((resolve, reject) => {
-    const proc = spawn('ffmpeg', [
+    const proc = spawn(ffmpegBin,[
       '-i', withAudioPath, '-map_metadata', '-1',
       '-c:v', 'copy', '-c:a', 'copy', '-y', outPath,
     ]);
@@ -377,7 +376,7 @@ async function runGifGeneration(sourceJobId, isMobile) {
   const bigH    = Math.round(h * 1.12) & ~1;
 
   const runFF = (args) => new Promise((resolve, reject) => {
-    const proc = spawn('ffmpeg', args);
+    const proc = spawn(ffmpegBin,args);
     let errLog = '';
     proc.stderr.on('data', d => { errLog += d.toString(); });
     proc.on('error', err => reject(new Error(`ffmpeg spawn error: ${err.message}`)));
