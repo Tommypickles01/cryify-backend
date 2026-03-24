@@ -299,7 +299,8 @@ async function runVideoGeneration(jobId, imageBuffer) {
 
   // Upload silent video to fal storage for MMAudio to access
   console.log(`[video:${jobId}] Uploading to fal storage...`);
-  const videoFile = new File([fs.readFileSync(rawPath)], 'video.mp4', { type: 'video/mp4' });
+  // Node.js 18 doesn't have File globally — use Blob with name property
+  const videoFile = Object.assign(new Blob([fs.readFileSync(rawPath)], { type: 'video/mp4' }), { name: 'video.mp4' });
   const publicUrl = await fal.storage.upload(videoFile);
   console.log(`[video:${jobId}] Fal URL: ${publicUrl}`);
 
