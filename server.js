@@ -11,7 +11,10 @@ const { v4: uuidv4 } = require('uuid');
 const { spawn } = require('child_process');
 const { GoogleGenAI } = require('@google/genai');
 const { fal } = require('@fal-ai/client');
-const ffmpegBin = 'ffmpeg'; // installed via nixpkgs in nixpacks.toml
+// Use local static binary if available (downloaded during build), else system ffmpeg
+const ffmpegBin = fs.existsSync(path.join(__dirname, 'ffmpeg'))
+  ? path.join(__dirname, 'ffmpeg')
+  : 'ffmpeg';
 
 const app    = express();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
@@ -91,8 +94,7 @@ async function geminiEdit(imageBuffer) {
 
 // ─── Health ───────────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
-  let ffmpeg = 'MISSING';
-  try { require('child_process').execSync('which ffmpeg', { timeout: 3000 }); ffmpeg = 'ok'; } catch { ffmpeg = 'MISSING'; }
+  const ffmpeg = fs.existsSync(ffmpegBin) ? 'ok' : 'MISSING';
   res.json({
     status: 'ok',
     build: 'v4-ffmpeg-static',
