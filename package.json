@@ -18,8 +18,5 @@
     "multer": "^1.4.5-lts.1",
     "sharp": "^0.33.2",
     "uuid": "^9.0.0"
-  },
-  "optionalDependencies": {
-    "ffmpeg-static": "^5.2.0"
   }
 }

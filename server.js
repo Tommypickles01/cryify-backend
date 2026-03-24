@@ -11,9 +11,7 @@ const { v4: uuidv4 } = require('uuid');
 const { spawn } = require('child_process');
 const { GoogleGenAI } = require('@google/genai');
 const { fal } = require('@fal-ai/client');
-let ffmpegBin = null;
-try { ffmpegBin = require('ffmpeg-static'); } catch { /* optional dep — falls back to system ffmpeg */ }
-if (!ffmpegBin) ffmpegBin = 'ffmpeg'; // try system ffmpeg as last resort
+const ffmpegBin = 'ffmpeg'; // installed via nixpkgs in nixpacks.toml
 
 const app    = express();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
