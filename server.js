@@ -94,6 +94,7 @@ app.get('/health', (req, res) => {
   const ffmpeg = (ffmpegBin && fs.existsSync(ffmpegBin)) ? 'ok' : 'MISSING';
   res.json({
     status: 'ok',
+    build: 'v4-ffmpeg-static',
     gemini_key: GEMINI && GEMINI !== 'your_gemini_api_key_here' ? 'configured' : 'MISSING',
     minimax_key: MINIMAX ? 'configured' : 'MISSING',
     fal_key: FAL_KEY ? 'configured' : 'MISSING',
